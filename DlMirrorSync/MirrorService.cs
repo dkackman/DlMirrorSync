@@ -12,6 +12,8 @@ public sealed class MirrorService
 
     public async Task<IEnumerable<(string id, IEnumerable<string> urls)>> FetchLatest(CancellationToken stoppingToken)
     {
+        _logger.LogInformation("Fetching latest mirrors");
+        var uri = _configuration.GetValue<Uri>("DlMirrorSync:MirrorServiceUri");
         await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
         return new List<(string id, IEnumerable<string> urls)>();
     }

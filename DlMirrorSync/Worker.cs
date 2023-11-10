@@ -22,9 +22,9 @@ public sealed class WindowsBackgroundService : BackgroundService
                 string? settingValue = _configuration["DlMirrorSync:PollingIntervalMinutes"] ?? "1440";
                 if (int.TryParse(settingValue, out int delay))
                 {
-                    // Use result
                     await _syncService.SyncSubscriptions(stoppingToken);
 
+                    _logger.LogInformation("Waiting {delay} minutes", delay);
                     await Task.Delay(TimeSpan.FromMinutes(delay), stoppingToken);
                 }
             }

@@ -16,8 +16,11 @@ public sealed class SyncService
         {
             foreach (var (id, urls) in await _mirrorService.FetchLatest(stoppingToken))
             {
+                _logger.LogInformation("Subscribing to mirror {id}", id);
+
                 await dataLayer.Subscribe(id, urls, stoppingToken);
             }
+            dataLayer.RpcClient.Dispose();
         }
     }
 
@@ -28,6 +31,7 @@ public sealed class SyncService
             // "ui" get's the same daemon that the electron ui uses
             // which is usually but not always the self hosted daemon
             var endpoint = Config.Open().GetEndpoint("ui");
+            _logger.LogInformation("Connecting to chia daemon at {Uri}", endpoint.Uri);
             using var rpcClient = new WebSocketRpcClient(endpoint);
             await rpcClient.Connect();
 

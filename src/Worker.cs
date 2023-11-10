@@ -16,7 +16,7 @@ public sealed class WindowsBackgroundService : BackgroundService
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                await _syncService.Sync(stoppingToken);
+                await _syncService.SyncSubscriptions(stoppingToken);
 
                 await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
             }

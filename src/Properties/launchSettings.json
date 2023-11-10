@@ -1,6 +1,6 @@
 ﻿{
   "profiles": {
-    "DlSync": {
+    "DlMirrorSync": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "environmentVariables": {

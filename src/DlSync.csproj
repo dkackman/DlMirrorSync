@@ -4,8 +4,8 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>App.WindowsService</RootNamespace>    
-    <UserSecretsId>dotnet-DlSync-fec92656-6d4a-4478-8aad-46e977ed7528</UserSecretsId>
+    <RootNamespace>App.DlMirrorSyncService</RootNamespace>    
+    <UserSecretsId>dotnet-DlMirrorSync-fec92656-6d4a-4478-8aad-46e977ed7528</UserSecretsId>
     <OutputType>exe</OutputType>
     <PublishSingleFile Condition="'$(Configuration)' == 'Release'">true</PublishSingleFile>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>

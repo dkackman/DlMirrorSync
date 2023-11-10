@@ -13,6 +13,7 @@ if (OperatingSystem.IsWindows())
     LoggerProviderOptions.RegisterProviderOptions<EventLogSettings, EventLogLoggerProvider>(builder.Services);
 }
 
+builder.Services.AddSingleton<MirrorService>();
 builder.Services.AddSingleton<SyncService>();
 builder.Services.AddHostedService<WindowsBackgroundService>();
 

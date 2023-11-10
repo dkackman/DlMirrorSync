@@ -4,11 +4,13 @@ public sealed class WindowsBackgroundService : BackgroundService
 {
     private readonly SyncService _syncService;
     private readonly ILogger<WindowsBackgroundService> _logger;
+    private readonly IConfiguration _configuration;
 
     public WindowsBackgroundService(
         SyncService jokeService,
-        ILogger<WindowsBackgroundService> logger) =>
-        (_syncService, _logger) = (jokeService, logger);
+        ILogger<WindowsBackgroundService> logger,
+        IConfiguration configuration) =>
+        (_syncService, _logger, _configuration) = (jokeService, logger, configuration);
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {

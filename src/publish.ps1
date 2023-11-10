@@ -1,2 +1,0 @@
-dotnet build -c Release -r win-x64 /p:PublishSingleFile=true
-dotnet publish -c Release -r win-x64 --self-contained true /p:PublishReadyToRun=true /p:PublishTrimmed=false /p:PublishDir="bin\Release\net7.0\win-x64\publish\win-x64\"

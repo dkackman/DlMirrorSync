@@ -4,7 +4,7 @@ Param(
 )
 
 $serviceName = "Data Layer Mirror Sync Service"
-$Description = "The Data Layer Mirror Sync Service watches for new stores and subscribes to them."
+$Description = "The Data Layer Mirror Sync Service watches for new chia data layer stores and subscribes to them."
 
 sc.exe create $serviceName binpath=$BinPath start=auto
 sc.exe description $serviceName $Description

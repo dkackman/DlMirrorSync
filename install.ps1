@@ -1,6 +1,9 @@
+# run publish.ps1 first
+# run this script as admin
+
 Param(
     [Parameter(Mandatory=$false)]
-    [string]$BinPath = ".\src\bin\Release\net7.0\win-x64\publish\win-x64\DLMirrorSync.exe"
+    [string]$BinPath = ".\standalone\win-x64\DLMirrorSync.exe"
 )
 
 $serviceName = "Data Layer Mirror Sync Service"

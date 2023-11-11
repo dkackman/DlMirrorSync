@@ -1,32 +1,27 @@
 $version = "0.1.0"
 $name = "DLMirrorSync"
 $src = "DLMirrorSync"
-$outputRoot = ".\publish"
+$outputRoot = "./publish"
+$framework = "net7.0"
 
 Remove-Item $outputRoot -Recurse -Force
 
-# win-x64
-dotnet build ./$src/$name.csproj -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true
-
-# single standalone file
-dotnet publish ./$src/$name.csproj -c Release -r win-x64 --self-contained true /p:PublishReadyToRun=true /property:PublishSingleFile=True /p:PublishTrimmed=false /p:PublishDir="bin\Release\net7.0\win-x64\publish\win-x64\" --output $outputRoot/standalone/win-x64  /property:DebugType=None /property:DebugSymbols=False
-Compress-Archive -CompressionLevel Optimal -Path $outputRoot/standalone/win-x64/* -DestinationPath $outputRoot/$name-$version-standalone-win-x64.zip
-
-#single file that needs dotnet isntalled
-dotnet publish ./$src/$name.csproj -c Release -r win-x64 --self-contained false /p:PublishReadyToRun=true /property:PublishSingleFile=True /p:PublishTrimmed=false /p:PublishDir="bin\Release\net7.0\win-x64\" --output $outputRoot/singlefile/win-x64  /property:DebugType=None /property:DebugSymbols=False
-Compress-Archive -CompressionLevel Optimal -Path $outputRoot/singlefile/win-x64/* -DestinationPath $outputRoot/$name-$version-singlefile-win-x64.zip
-
-
 function Publish-Project {
     param(
-        [string]$src,
-        [string]$name,
-        [string]$version,
-        [string]$outputRoot,
-        [bool]$selfContained,
-        [string]$publishType
+        [string]$runtime
     )
+ 
+    dotnet build ./$src/$name.csproj -c Release -r $runtime --framework $framework --self-contained true /p:PublishSingleFile=true
 
-    dotnet publish ./$src/$name.csproj -c Release -r win-x64 --self-contained $selfContained /p:PublishReadyToRun=true /property:PublishSingleFile=True /p:PublishTrimmed=false /p:PublishDir="bin\Release\net7.0\win-x64\" --output $outputRoot/$publishType/win-x64  /property:DebugType=None /property:DebugSymbols=False
-    Compress-Archive -CompressionLevel Optimal -Path $outputRoot/$publishType/win-x64/* -DestinationPath $outputRoot/$name-$version-$publishType-win-x64.zip
+    # single standalone file
+    dotnet publish ./$src/$name.csproj -c Release -r $runtime --framework $framework --self-contained true /p:PublishReadyToRun=true /property:PublishSingleFile=True /p:PublishTrimmed=false /property:IncludeNativeLibrariesForSelfExtract=True /p:PublishDir="bin\Release\$framework\$runtime\" --output $outputRoot/standalone/$runtime  /property:DebugType=None /property:DebugSymbols=False
+    Compress-Archive -CompressionLevel Optimal -Path $outputRoot/standalone/$runtime/* -DestinationPath $outputRoot/$name-$version-standalone-$runtime.zip
+
+    #single file that needs dotnet installed
+    dotnet publish ./$src/$name.csproj -c Release -r $runtime --framework $framework --self-contained false /p:PublishReadyToRun=true /property:PublishSingleFile=True /p:PublishTrimmed=false /p:PublishDir="bin\Release\$framework\$runtime\" --output $outputRoot/singlefile/$runtime  /property:DebugType=None /property:DebugSymbols=False
+    Compress-Archive -CompressionLevel Optimal -Path $outputRoot/singlefile/$runtime/* -DestinationPath $outputRoot/$name-$version-singlefile-$runtime.zip
 }
+
+Publish-Project("win-x64")
+Publish-Project("linux-x64")
+Publish-Project("osx.11.0-x64")

@@ -15,11 +15,16 @@ public sealed class SyncService
         if (dataLayer is not null)
         {
             using var rpc = dataLayer.RpcClient;
+            var subscriptions = await dataLayer.Subscriptions(stoppingToken);
             await foreach (var id in _mirrorService.FetchLatest(stoppingToken))
             {
                 _logger.LogInformation("Subscribing to mirror {id}", id);
 
-                await dataLayer.Subscribe(id, Enumerable.Empty<string>(), stoppingToken);
+                if (!subscriptions.Contains(id))
+                {
+                    await dataLayer.Subscribe(id, Enumerable.Empty<string>(), stoppingToken);
+                }
+                //await dataLayer.AddMirror(id, 0, Enumerable.Empty<string>(), 0, stoppingToken);
             }
         }
     }

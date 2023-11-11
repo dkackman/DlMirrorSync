@@ -24,7 +24,6 @@ public sealed class MirrorService
 
     public async IAsyncEnumerable<string> FetchLatest([EnumeratorCancellation] CancellationToken stoppingToken)
     {
-        // this would be fatal if not set
         var uri = _configuration["DlMirrorSync:MirrorServiceUri"] ?? throw new InvalidOperationException("Missing MirrorServiceUri");
 
         _logger.LogInformation("Fetching latest mirrors from {uri}", uri);

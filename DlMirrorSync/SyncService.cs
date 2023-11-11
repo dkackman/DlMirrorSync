@@ -1,3 +1,4 @@
+using System.Net;
 using chia.dotnet;
 
 namespace DlMirrorSync;
@@ -15,13 +16,13 @@ public sealed class SyncService
         if (dataLayer is not null)
         {
             using var rpc = dataLayer.RpcClient;
-            //var subscriptions = await dataLayer.Subscriptions(stoppingToken);
+            var subscriptions = await dataLayer.Subscriptions(stoppingToken);
+
             await foreach (var id in _mirrorService.FetchLatest(stoppingToken))
             {
-                _logger.LogInformation("Subscribing to mirror {id}", id);
-
-                //if (!subscriptions.Contains(id))
+                if (!subscriptions.Contains(id))
                 {
+                    _logger.LogInformation("Subscribing to mirror {id}", id);
                     await dataLayer.Subscribe(id, Enumerable.Empty<string>(), stoppingToken);
                 }
                 //await dataLayer.AddMirror(id, 0, Enumerable.Empty<string>(), 0, stoppingToken);
@@ -35,15 +36,15 @@ public sealed class SyncService
         {
             // "ui" get's the same daemon that the electron ui uses
             // which is usually but not always the self hosted daemon
-            var endpoint = Config.Open().GetEndpoint("ui");
-            _logger.LogInformation("Connecting to chia daemon at {Uri}", endpoint.Uri);
-            var rpcClient = new WebSocketRpcClient(endpoint);
-            await rpcClient.Connect(stoppingToken);
+            // so get the daemon and use the host name for the data layer uri
+            var endpoint = Config.Open().GetEndpoint("data_layer");
 
-            var daemon = new DaemonProxy(rpcClient, "DlMirrorSync");
-            await daemon.RegisterService(stoppingToken);
-
-            return daemon.CreateProxyFrom<DataLayerProxy>();
+            _logger.LogInformation("Connecting to data layer at {Uri}", endpoint.Uri);
+            var rpcClient = new HttpRpcClient(endpoint);
+            var dl = new DataLayerProxy(rpcClient, "DlMirrorSync");
+            // quick heartbeat validation 
+            await dl.HealthZ(stoppingToken);
+            return dl;
         }
         catch (Exception ex)
         {

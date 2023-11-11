@@ -14,13 +14,13 @@ public sealed class SyncService
         var dataLayer = await GetDataLayer(stoppingToken);
         if (dataLayer is not null)
         {
-            foreach (var (id, urls) in await _mirrorService.FetchLatest(stoppingToken))
+            using var rpc = dataLayer.RpcClient;
+            await foreach (var id in _mirrorService.FetchLatest(stoppingToken))
             {
                 _logger.LogInformation("Subscribing to mirror {id}", id);
 
-                await dataLayer.Subscribe(id, urls, stoppingToken);
+                await dataLayer.Subscribe(id, Enumerable.Empty<string>(), stoppingToken);
             }
-            dataLayer.RpcClient.Dispose();
         }
     }
 
@@ -32,11 +32,11 @@ public sealed class SyncService
             // which is usually but not always the self hosted daemon
             var endpoint = Config.Open().GetEndpoint("ui");
             _logger.LogInformation("Connecting to chia daemon at {Uri}", endpoint.Uri);
-            using var rpcClient = new WebSocketRpcClient(endpoint);
-            await rpcClient.Connect();
+            var rpcClient = new WebSocketRpcClient(endpoint);
+            await rpcClient.Connect(stoppingToken);
 
             var daemon = new DaemonProxy(rpcClient, "DlMirrorSync");
-            await daemon.RegisterService();
+            await daemon.RegisterService(stoppingToken);
 
             return daemon.CreateProxyFrom<DataLayerProxy>();
         }

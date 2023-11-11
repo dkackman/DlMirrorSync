@@ -1,5 +1,5 @@
 namespace DlMirrorSync;
-using chia.dotnet;
+
 public sealed class SyncService
 {
     private readonly ChiaService _chiaService;
@@ -56,7 +56,6 @@ public sealed class SyncService
             }
             catch (Exception ex)
             {
-                //
                 _logger.LogError(ex, "{Message}", ex.Message);
             }
         }

@@ -1,6 +1,5 @@
 namespace DlMirrorSync;
 
-using System.Net.Http.Json;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using Newtonsoft.Json;
@@ -10,6 +9,13 @@ public sealed class MirrorService
 {
     private readonly ILogger<MirrorService> _logger;
     private readonly IConfiguration _configuration;
+    private readonly JsonSerializerSettings _settings = new JsonSerializerSettings
+    {
+        ContractResolver = new DefaultContractResolver
+        {
+            NamingStrategy = new SnakeCaseNamingStrategy()
+        }
+    };
 
     public MirrorService(
         ILogger<MirrorService> logger,
@@ -18,36 +24,45 @@ public sealed class MirrorService
 
     public async IAsyncEnumerable<string> FetchLatest([EnumeratorCancellation] CancellationToken stoppingToken)
     {
-        var uri = _configuration["DlMirrorSync:MirrorServiceUri"];
-        _logger.LogInformation("Fetching latest mirrors from { uri}", uri);
+        // this would be fatal if not set
+        var uri = _configuration["DlMirrorSync:MirrorServiceUri"] ?? throw new InvalidOperationException("Missing MirrorServiceUri");
+
+        _logger.LogInformation("Fetching latest mirrors from {uri}", uri);
         using var httpClient = new HttpClient();
-        var pageIndex = 1;
-        var totalPages = 1;
-        var settings = new JsonSerializerSettings
-        {
-            ContractResolver = new DefaultContractResolver
-            {
-                NamingStrategy = new SnakeCaseNamingStrategy()
-            }
-        };
+        var currentPage = 1;
+        var totalPages = 0; // we won't know actual total pages until we get the first page
 
         do
         {
-            var response = await httpClient.GetAsync($"{uri}?page={pageIndex}", stoppingToken);
-            response.EnsureSuccessStatusCode();
-
-            var responseBody = await response.Content.ReadAsStringAsync(stoppingToken);
-            var page = JsonConvert.DeserializeObject<PageRecord>(responseBody, settings) ?? throw new InvalidOperationException("Failed to fetch mirrors");
+            var page = await GetPage(httpClient, uri, currentPage, stoppingToken);
             totalPages = page.TotalPages;
 
             foreach (var singleton in page.Mirrors)
             {
                 yield return singleton.SingletonId;
             }
-            System.Diagnostics.Debug.WriteLine($"Page {pageIndex} of {totalPages}");
+            System.Diagnostics.Debug.WriteLine($"Page {currentPage} of {totalPages}");
 
-            pageIndex++;
-        } while (pageIndex <= totalPages && !stoppingToken.IsCancellationRequested);
+            currentPage++;
+        } while (currentPage <= totalPages && !stoppingToken.IsCancellationRequested);
+    }
+
+    private async Task<PageRecord> GetPage(HttpClient httpClient, string uri, int currentPage, CancellationToken stoppingToken)
+    {
+        try
+        {
+            using var response = await httpClient.GetAsync($"{uri}?page={currentPage}", stoppingToken);
+            response.EnsureSuccessStatusCode();
+
+            var responseBody = await response.Content.ReadAsStringAsync(stoppingToken);
+            return JsonConvert.DeserializeObject<PageRecord>(responseBody, _settings) ?? throw new InvalidOperationException("Failed to fetch mirrors");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "{Message}", ex.Message);
+            // this is not fatal to the process, so return an empty page
+            return new PageRecord();
+        }
     }
 }
 

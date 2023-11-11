@@ -19,14 +19,12 @@ public sealed class WindowsBackgroundService : BackgroundService
             while (!stoppingToken.IsCancellationRequested)
             {
                 // default to once a day
-                string? settingValue = _configuration["DlMirrorSync:PollingIntervalMinutes"] ?? "1440";
-                if (int.TryParse(settingValue, out int delay))
-                {
-                    await _syncService.SyncSubscriptions(stoppingToken);
+                var delay = _configuration.GetValue<int>("DlMirrorSync:PollingIntervalMinutes", 1440);
 
-                    _logger.LogInformation("Waiting {delay} minutes", delay);
-                    await Task.Delay(TimeSpan.FromMinutes(delay), stoppingToken);
-                }
+                await _syncService.SyncSubscriptions(stoppingToken);
+
+                _logger.LogInformation("Waiting {delay} minutes", delay);
+                await Task.Delay(TimeSpan.FromMinutes(delay), stoppingToken);
             }
         }
         catch (OperationCanceledException)

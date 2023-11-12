@@ -1,10 +1,21 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 
+<!--
+	This will install the DlMirrorSync.exe file as a Windows Service
+	and use the current user name to set the config file path.
+	The service runs as local system but will use that config file
+
+	TODO add the ability for the  user to choose the config file path
+
+	should a user really need to change the config file path they can use sc.exe:
+
+	sc.exe config "Data Layer Mirror Sync Service" binPath="C:\Program Files\<path to>\DLMirrorSync.exe <full path to config file>"
+-->
 
 <!-- Define the variables in "$(var.*) expressions" -->
 <?define Name = "Data Layer Mirror Sync Service" ?>
 <?define Manufacturer = "dkackman" ?>
-<?define Version = "0.1.0.0" ?>
+<?define Version = "0.1.1.0" ?>
 <?define UpgradeCode = "4E4A92BC-3DA5-4A74-BF8E-D48CFD01010C" ?>
 
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
@@ -51,7 +62,9 @@
 								DisplayName="$(Name)"
 								Description="The Data Layer Mirror Sync Service watches for new chia data layer stores and subscribes to them."
 								Start="auto"
-								ErrorControl="normal" />
+								Account="LocalSystem"
+								ErrorControl="normal"
+								Arguments='"C:\Users\[USERNAME]\.chia\mainnet\config\config.yaml"' />
 
 				<!-- Tell WiX to start the Service -->
 				<ServiceControl Id="StartService"

@@ -13,10 +13,16 @@ if (OperatingSystem.IsWindows())
     LoggerProviderOptions.RegisterProviderOptions<EventLogSettings, EventLogLoggerProvider>(builder.Services);
 }
 
-builder.Services.AddSingleton<ChiaService>();
+builder.Services.AddSingleton(services =>
+    {
+        return new ChiaService(
+            args.FirstOrDefault(),
+            services.GetRequiredService<ILogger<ChiaService>>(),
+            services.GetRequiredService<IConfiguration>());
+    });
 builder.Services.AddSingleton<MirrorService>();
 builder.Services.AddSingleton<SyncService>();
-builder.Services.AddHostedService<WindowsBackgroundService>();
+builder.Services.AddHostedService<DlMirrorSyncService>();
 
 IHost host = builder.Build();
 host.Run();

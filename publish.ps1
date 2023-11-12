@@ -1,4 +1,4 @@
-$version = "0.1.0"
+$version = "0.1.1"
 $name = "DLMirrorSync"
 $src = "DLMirrorSync"
 $outputRoot = "./publish"
@@ -13,11 +13,11 @@ function Publish-Project {
     )
  
     # single standalone file
-    dotnet publish ./$src/$name.csproj -c Release -r $runtime --framework $framework --self-contained true /p:PublishReadyToRun=true /property:PublishSingleFile=True /p:PublishTrimmed=false /property:IncludeNativeLibrariesForSelfExtract=True /p:PublishDir="bin\Release\$framework\$runtime\" --output $outputRoot/standalone/$runtime
+    dotnet publish ./$src/$name.csproj -c Release -r $runtime --framework $framework --self-contained true /p:Version=$version /p:PublishReadyToRun=true /p:PublishSingleFile=True /p:PublishTrimmed=false /p:IncludeNativeLibrariesForSelfExtract=True /p:PublishDir="bin\Release\$framework\$runtime\" --output $outputRoot/standalone/$runtime
     Compress-Archive -CompressionLevel Optimal -Path $outputRoot/standalone/$runtime/* -DestinationPath $outputRoot/$name-$version-standalone-$runtime.zip
 
     # single file that needs dotnet installed
-    dotnet publish ./$src/$name.csproj -c Release -r $runtime --framework $framework --self-contained false /p:PublishReadyToRun=false /property:PublishSingleFile=True /p:PublishTrimmed=false /property:IncludeNativeLibrariesForSelfExtract=True /p:PublishDir="bin\Release\$framework\$runtime\" --output $outputRoot/singlefile/$runtime
+    dotnet publish ./$src/$name.csproj -c Release -r $runtime --framework $framework --self-contained false /p:Version=$version /p:PublishReadyToRun=false /p:PublishSingleFile=True /p:PublishTrimmed=false /p:IncludeNativeLibrariesForSelfExtract=True /p:PublishDir="bin\Release\$framework\$runtime\" --output $outputRoot/singlefile/$runtime
     Compress-Archive -CompressionLevel Optimal -Path $outputRoot/singlefile/$runtime/* -DestinationPath $outputRoot/$name-$version-singlefile-$runtime.zip
 }
 

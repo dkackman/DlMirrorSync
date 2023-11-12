@@ -4,20 +4,32 @@ namespace DlMirrorSync;
 
 public sealed class ChiaService
 {
-    private readonly ILogger<SyncService> _logger;
+    private readonly string? _configFilePath;
+    private readonly ILogger<ChiaService> _logger;
     private readonly IConfiguration _configuration;
 
-    public ChiaService(ILogger<SyncService> logger, IConfiguration configuration) =>
-            (_logger, _configuration) = (logger, configuration);
+    public ChiaService(string? configFilePath, ILogger<ChiaService> logger, IConfiguration configuration) =>
+            (_configFilePath, _logger, _configuration) = (configFilePath, logger, configuration);
+
+    private Config GetConfig()
+    {
+        if (_configFilePath is not null)
+        {
+            _logger.LogInformation("Using config file at {Path}", _configFilePath);
+            return Config.Open(_configFilePath);
+        }
+
+        return Config.Open();
+    }
 
     public async Task<ulong> GetFee(ulong cost, CancellationToken stoppingToken)
     {
         try
         {
-            var endpoint = Config.Open().GetEndpoint("full_node");
+            var endpoint = GetConfig().GetEndpoint("full_node");
             using var rpcClient = new HttpRpcClient(endpoint);
             var fullNode = new FullNodeProxy(rpcClient, "DlMirrorSync");
-            int[] targetTimes = { 300 };
+            int[] targetTimes = { 300 }; // five minutes
             var fee = await fullNode.GetFeeEstimate(cost, targetTimes, stoppingToken);
             return fee.estimates.First();
         }
@@ -32,10 +44,10 @@ public sealed class ChiaService
     {
         try
         {
-            var endpoint = Config.Open().GetEndpoint("wallet");
+            var endpoint = GetConfig().GetEndpoint("wallet");
             var rpcClient = new HttpRpcClient(endpoint);
             var wallet = new WalletProxy(rpcClient, "DlMirrorSync");
-            
+
             await wallet.HealthZ(stoppingToken);
             return new Wallet(walletId, wallet);
         }
@@ -53,7 +65,7 @@ public sealed class ChiaService
             // "ui" get's the same daemon that the electron ui uses
             // which is usually but not always the self hosted daemon
             // so get the daemon and use the host name for the data layer uri
-            var endpoint = Config.Open().GetEndpoint("data_layer");
+            var endpoint = GetConfig().GetEndpoint("data_layer");
 
             _logger.LogInformation("Connecting to data layer at {Uri}", endpoint.Uri);
             var rpcClient = new HttpRpcClient(endpoint);

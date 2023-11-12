@@ -5,8 +5,7 @@ VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DlMirrorSync", "DlMirrorSync\DlMirrorSync.csproj", "{FA9885D7-14F7-4E57-83BD-5E3AB4891343}"
 EndProject
-Project("{B7DD6F7E-DEF8-4E67-B5B7-07EF123DB6F0}") = "MsiInstaller", "MsiInstaller\MsiInstaller.wixproj", "{DB51725E-F070-4144-9A79-1E2722A796A1}"
-EndProject
+
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

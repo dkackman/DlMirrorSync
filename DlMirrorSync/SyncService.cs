@@ -19,6 +19,7 @@ public sealed class SyncService
         var xchWallet = await _chiaService.GetWallet(_configuration.GetValue<uint>("DlMirrorSync:XchWalletId", 1), stoppingToken);
         if (dataLayer is not null && xchWallet is not null)
         {
+            _logger.LogInformation("Syncing mirrors...");
             try
             {
                 var addMirrorAmount = _configuration.GetValue<ulong>("DlMirrorSync:AddMirrorAmount", 300000000);

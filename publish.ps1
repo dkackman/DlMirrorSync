@@ -27,4 +27,4 @@ Publish-Project("win-x64")
 
 # build the msi - win-x64 only for now
 dotnet build ./MsiInstaller/MsiInstaller.wixproj -c Release -r win-x64 --output $outputRoot
-Move-Item -Path $outputRoot/en-us/*.msi -Destination $outputRoot
+Move-Item -Path $outputRoot/en-us/*.msi -Destination $outputRoot/$name-$version-service-win-x64.msi

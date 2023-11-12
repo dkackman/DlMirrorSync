@@ -28,6 +28,7 @@ public sealed class ChiaService
         {
             var endpoint = GetConfig().GetEndpoint("full_node");
             using var rpcClient = new HttpRpcClient(endpoint);
+
             var fullNode = new FullNodeProxy(rpcClient, "DlMirrorSync");
             int[] targetTimes = { 300 }; // five minutes
             var fee = await fullNode.GetFeeEstimate(cost, targetTimes, stoppingToken);
@@ -46,8 +47,8 @@ public sealed class ChiaService
         {
             var endpoint = GetConfig().GetEndpoint("wallet");
             var rpcClient = new HttpRpcClient(endpoint);
-            var wallet = new WalletProxy(rpcClient, "DlMirrorSync");
 
+            var wallet = new WalletProxy(rpcClient, "DlMirrorSync");
             await wallet.HealthZ(stoppingToken);
             return new Wallet(walletId, wallet);
         }
@@ -62,13 +63,11 @@ public sealed class ChiaService
     {
         try
         {
-            // "ui" get's the same daemon that the electron ui uses
-            // which is usually but not always the self hosted daemon
-            // so get the daemon and use the host name for the data layer uri
             var endpoint = GetConfig().GetEndpoint("data_layer");
 
             _logger.LogInformation("Connecting to data layer at {Uri}", endpoint.Uri);
             var rpcClient = new HttpRpcClient(endpoint);
+
             var dl = new DataLayerProxy(rpcClient, "DlMirrorSync");
             await dl.HealthZ(stoppingToken);
             return dl;

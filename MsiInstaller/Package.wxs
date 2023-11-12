@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Define the variables in "$(var.*) expressions" -->
+<?define Name = "Data Layer Mirror Sync Service" ?>
+<?define Manufacturer = "dkackman" ?>
+<?define Version = "0.1.0.0" ?>
+<?define UpgradeCode = "4E4A92BC-3DA5-4A74-BF8E-D48CFD01010C" ?>
+
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+	<Package Name="$(Name)"
+			 Manufacturer="$(Manufacturer)"
+			 Version="$(Version)"
+			 UpgradeCode="$(var.UpgradeCode)"
+			 Compressed="true">
+
+		<!-- Allow upgrades and prevent downgrades -->
+		<MajorUpgrade DowngradeErrorMessage="A later version of [ProductName] is already installed. Setup will now exit." />
+
+		<!-- Define the directory structure -->
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFiles64Folder">
+
+				<!-- Create a folder inside program files -->
+				<Directory Id="ROOTDIRECTORY" Name="$(var.Manufacturer)">
+
+					<!-- Create a folder within the parent folder given the name -->
+					<Directory Id="INSTALLFOLDER" Name="$(Name)" />
+				</Directory>
+			</Directory>
+		</Directory>
+
+		<!-- The files inside this DirectoryRef are linked to
+			 the DlMirrorSync directory via INSTALLFOLDER -->
+		<DirectoryRef Id="INSTALLFOLDER">
+
+			<!-- Create a single component which is the DlMirrorSync.exe file -->
+			<Component Id="AppSettings">
+				<File Id="appsettings.json"
+					  Source="$(var.DlMirrorSync.TargetDir)publish\win-x64\appsettings.json"
+					  KeyPath="true" />				
+			</Component>
+			<Component Id="ServiceExecutable" Bitness="always64">
+
+				<!-- Copies the DlMirrorSync.exe file using the
+					 project reference preprocessor variables -->
+				<File Id="DlMirrorSync.exe"
+					  Source="$(var.DlMirrorSync.TargetDir)publish\win-x64\DlMirrorSync.exe"
+					  KeyPath="true" />
+
+				<!-- Remove all files from the INSTALLFOLDER on uninstall -->
+				<RemoveFile Id="ALLFILES" Name="*.*" On="both" />
+
+				<!-- Tell WiX to install the Service -->
+				<ServiceInstall Id="ServiceInstaller"
+								Type="ownProcess"
+								Name="DlMirrorSync"
+								DisplayName="$(Name)"
+								Description="The Data Layer Mirror Sync Service watches for new chia data layer stores and subscribes to them."
+								Start="auto"
+								ErrorControl="normal" />
+
+				<!-- Tell WiX to start the Service -->
+				<ServiceControl Id="StartService"
+								Start="install"
+								Stop="both"
+								Remove="uninstall"
+								Name="DlMirrorSync"
+								Wait="true" />
+			</Component>
+		</DirectoryRef>
+
+		<!-- Tell WiX to install the files -->
+		<Feature Id="Service" Title="DlMirrorSync Setup" Level="1">
+			<ComponentRef Id="ServiceExecutable" />
+			<ComponentRef Id="AppSettings" />
+		</Feature>
+
+	</Package>
+</Wix>

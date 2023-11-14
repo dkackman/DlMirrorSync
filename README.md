@@ -17,4 +17,4 @@ Can either be run from code, from built binaries in [the latest release(https://
 - Run `./publish.ps1` which will build single file and standalone binaries for windows, linux and os-x
 - Outputs will be placed in the `publish` folder
 
-To install as a windows service run `./install.ps1`
+To install as a windows service run `./install.ps1` as admin or from an elevated terminal.

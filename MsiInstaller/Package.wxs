@@ -9,7 +9,7 @@
 
 	should a user really need to change the config file path they can use sc.exe:
 
-	sc.exe config "Data Layer Mirror Sync Service" binPath="C:\Program Files\<path to>\DLMirrorSync.exe <full path to config file>"
+	sc.exe config "Data Layer Mirror Sync Service" binPath="C:\Program Files\<path to>\DlMirrorSync.exe <full path to config file>"
 -->
 
 <!-- Define the variables in "$(var.*) expressions" -->

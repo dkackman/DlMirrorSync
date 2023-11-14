@@ -1,6 +1,6 @@
 $version = "0.1.1"
-$name = "DLMirrorSync"
-$src = "DLMirrorSync"
+$name = "DlMirrorSync"
+$src = "DlMirrorSync"
 $outputRoot = "./publish"
 $framework = "net7.0"
 
@@ -22,8 +22,8 @@ function Publish-Project {
 }
 
 Publish-Project("win-x64")
-#Publish-Project("linux-x64")
-#Publish-Project("osx.11.0-x64")
+Publish-Project("linux-x64")
+Publish-Project("osx.11.0-x64")
 
 # build the msi - win-x64 only for now
 dotnet build ./MsiInstaller/MsiInstaller.wixproj -c Release -r win-x64 --output $outputRoot

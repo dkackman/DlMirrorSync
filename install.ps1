@@ -3,7 +3,7 @@
 
 Param(
     [Parameter(Mandatory=$false)]
-    [string]$BinPath = ".\standalone\win-x64\DLMirrorSync.exe"
+    [string]$BinPath = ".\standalone\win-x64\DlMirrorSync.exe"
 )
 
 $serviceName = "Data Layer Mirror Sync Service"

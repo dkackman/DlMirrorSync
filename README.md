@@ -10,3 +10,9 @@ Can either be run from code, from built binaries in [the latest release(https://
 - The `singlefile` versions require [.NET 7](https://dotnet.microsoft.com/en-us/download/dotnet/7.0).
 - The `standalone` versions have .net embedded.
 - The MSI installs the windows serivce that will synchronize the singletons once per day. (this installs as autostart so will run immediately)
+
+## Build
+
+- Ensure you have the .NET 7 SDK installed
+- Run `./publish.ps1` which will build single file and standalone binaries for windows, linux and os-x
+- Outputs will be placed in the `publish` folder

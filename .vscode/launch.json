@@ -13,7 +13,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/DlMirrorSync/bin/Debug/net7.0/win-x64/DlMirrorSync.dll",
+            "program": "${workspaceFolder}/DlMirrorSync/bin/Debug/net8.0/win-x64/DlMirrorSync.dll",
             "args": [],
             "cwd": "${workspaceFolder}/DlMirrorSync",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console

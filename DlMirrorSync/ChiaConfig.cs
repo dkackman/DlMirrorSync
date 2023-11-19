@@ -54,7 +54,7 @@ public sealed class ChiaConfig
     public EndpointInfo GetEndpoint(string name)
     {
         // first check user secrets for the connection
-        // https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-7.0&tabs=windows
+        // https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-8.0&tabs=windows
         var endpointUri = _configuration.GetValue($"{name}_uri", "")!;
         if (!string.IsNullOrEmpty(endpointUri))
         {

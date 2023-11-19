@@ -24,5 +24,5 @@ sudo sed "s/USERNAME/$USERNAME/g" "$DIR/dlsync.service" > "/etc/systemd/system/d
 
 
 sudo systemctl start dlsync
-sudo systemctl start dlsync
+sudo systemctl status dlsync
 sudo systemctl enable dlsync

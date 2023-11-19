@@ -18,9 +18,10 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 USERNAME=$(whoami)
 
 # Replace all instances of 'USERNAME' with the runas user's name
-
 # in 'dlsync.service' and save as '/etc/systemd/system/dlsync.service'
 sudo sed "s/USERNAME/$USERNAME/g" "$DIR/dlsync.service" > "/etc/systemd/system/dlsync.service"
+
+
 sudo systemctl start dlsync
 sudo systemctl start dlsync
 sudo systemctl enable dlsync

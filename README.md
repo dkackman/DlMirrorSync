@@ -16,6 +16,8 @@ Can either be run from code, from built binaries in [the latest release](https:/
 - Run `./publish.ps1` which will build single file and standalone binaries for windows, linux, and os-x
 - Outputs will be placed in the `publish` folder
 
+To build the installer you need wix installed: `dotnet tool install -g dotnet-wix` (Windows only).
+
 To manually install as a windows service run `./install.ps1` from an elevated terminal.
 
 ## Run

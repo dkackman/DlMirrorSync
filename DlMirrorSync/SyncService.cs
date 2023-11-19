@@ -27,13 +27,15 @@ public sealed class SyncService
             var addMirrorAmount = _configuration.GetValue<ulong>("DlMirrorSync:AddMirrorAmount", 300000000);
             var fee = await _chiaService.GetFee(addMirrorAmount, stoppingToken);
 
+            _logger.LogInformation("Fetching subscriptions...");
             var subscriptions = await _dataLayer.Subscriptions(stoppingToken);
 
+            _logger.LogInformation("Fetching latest mirrors list...");
             await foreach (var id in _mirrorService.FetchLatest(stoppingToken))
             {
                 if (!subscriptions.Contains(id))
                 {
-                    _logger.LogInformation("Subscribing to mirror {id}", id);
+                    _logger.LogInformation("Subscribing to {id}", id);
                     await _dataLayer.Subscribe(id, Enumerable.Empty<string>(), stoppingToken);
                 }
 
@@ -44,6 +46,7 @@ public sealed class SyncService
                     var balance = await xchWallet.GetBalance(stoppingToken);
                     if (addMirrorAmount + fee < balance.SpendableBalance)
                     {
+                        _logger.LogInformation("Adding mirror {id}", id);
                         await _dataLayer.AddMirror(id, addMirrorAmount, Enumerable.Empty<string>(), fee, stoppingToken);
                     }
                     else

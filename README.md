@@ -9,7 +9,7 @@ Can either be run from code, from built binaries in [the latest release](https:/
 
 - The `singlefile` versions require [.NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0).
 - The `standalone` versions have .net embedded so don't need it installed separately.
-- The MSI installs the windows service that will synchronize the singletons once per day. (this installs as autostart so will run immediately)
+- The MSI installs the windows service that will synchronize the singletons once per day. (this installs as autostart and will run immediately)
 
 ## Build
 

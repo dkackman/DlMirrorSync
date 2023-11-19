@@ -49,6 +49,10 @@ public sealed class SyncService
                     else
                     {
                         _logger.LogWarning("Insufficient funds to add mirror {id}. Balance={SpendableBalance}, Cost={addMirrorAmount}, Fee={fee}", id, balance.SpendableBalance, addMirrorAmount, fee);
+                        _logger.LogWarning("Stopping mirror sync for now.");
+
+                        // stop trying to add mirrors until we have more funds
+                        return;
                     }
                 }
             }

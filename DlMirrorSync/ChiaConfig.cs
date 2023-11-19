@@ -31,7 +31,7 @@ public sealed class ChiaConfig
 
         return "";
     }
-    
+
     private Config GetConfig()
     {
         // first see if we have a config file path in the appsettings.json

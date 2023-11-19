@@ -14,8 +14,9 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 # Get the username of the logged in user
 # the service will run as the installing user
-# change this line to run as a different user
-USERNAME=$(whoami)
+# pass the username as the first argument to the script
+# default to logged in user if not supplied
+USERNAME=${1:-$(logname)}
 
 # Replace all instances of 'USERNAME' with the runas user's name
 # in 'dlsync.service' and save as '/etc/systemd/system/dlsync.service'

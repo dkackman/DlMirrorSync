@@ -4,34 +4,20 @@ namespace DlMirrorSync;
 
 public sealed class ChiaService
 {
-    private readonly string? _configFilePath;
+    private readonly FullNodeProxy _fullNode;
+    private readonly WalletProxy _wallet;
     private readonly ILogger<ChiaService> _logger;
     private readonly IConfiguration _configuration;
 
-    public ChiaService(string? configFilePath, ILogger<ChiaService> logger, IConfiguration configuration) =>
-            (_configFilePath, _logger, _configuration) = (configFilePath, logger, configuration);
-
-    private Config GetConfig()
-    {
-        if (_configFilePath is not null)
-        {
-            _logger.LogInformation("Using config file at {Path}", _configFilePath);
-            return Config.Open(_configFilePath);
-        }
-
-        return Config.Open();
-    }
+    public ChiaService(WalletProxy wallet, FullNodeProxy fullNode, ILogger<ChiaService> logger, IConfiguration configuration) =>
+            (_wallet, _fullNode, _logger, _configuration) = (wallet, fullNode, logger, configuration);
 
     public async Task<ulong> GetFee(ulong cost, CancellationToken stoppingToken)
     {
         try
         {
-            var endpoint = GetConfig().GetEndpoint("full_node");
-            using var rpcClient = new HttpRpcClient(endpoint);
-
-            var fullNode = new FullNodeProxy(rpcClient, "DlMirrorSync");
             int[] targetTimes = { 300 }; // five minutes
-            var fee = await fullNode.GetFeeEstimate(cost, targetTimes, stoppingToken);
+            var fee = await _fullNode.GetFeeEstimate(cost, targetTimes, stoppingToken);
             return fee.estimates.First();
         }
         catch (Exception ex)
@@ -41,41 +27,5 @@ public sealed class ChiaService
         }
     }
 
-    public async Task<Wallet?> GetWallet(uint walletId, CancellationToken stoppingToken)
-    {
-        try
-        {
-            var endpoint = GetConfig().GetEndpoint("wallet");
-            var rpcClient = new HttpRpcClient(endpoint);
-
-            var wallet = new WalletProxy(rpcClient, "DlMirrorSync");
-            await wallet.HealthZ(stoppingToken);
-            return new Wallet(walletId, wallet);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "{Message}", ex.Message);
-            return null;
-        }
-    }
-
-    public async Task<DataLayerProxy?> GetDataLayer(CancellationToken stoppingToken)
-    {
-        try
-        {
-            var endpoint = GetConfig().GetEndpoint("data_layer");
-
-            _logger.LogInformation("Connecting to data layer at {Uri}", endpoint.Uri);
-            var rpcClient = new HttpRpcClient(endpoint);
-
-            var dl = new DataLayerProxy(rpcClient, "DlMirrorSync");
-            await dl.HealthZ(stoppingToken);
-            return dl;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "{Message}", ex.Message);
-            return null;
-        }
-    }
+    public Wallet GetWallet(uint walletId) => new Wallet(walletId, _wallet);
 }

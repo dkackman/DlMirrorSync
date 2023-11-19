@@ -1,14 +1,14 @@
 namespace DlMirrorSync;
 
-public sealed class DlMirrorSyncService : BackgroundService
+public sealed class SyncPollingService : BackgroundService
 {
     private readonly SyncService _syncService;
-    private readonly ILogger<DlMirrorSyncService> _logger;
+    private readonly ILogger<SyncPollingService> _logger;
     private readonly IConfiguration _configuration;
 
-    public DlMirrorSyncService(
+    public SyncPollingService(
         SyncService syncService,
-        ILogger<DlMirrorSyncService> logger,
+        ILogger<SyncPollingService> logger,
         IConfiguration configuration) =>
         (_syncService, _logger, _configuration) = (syncService, logger, configuration);
 

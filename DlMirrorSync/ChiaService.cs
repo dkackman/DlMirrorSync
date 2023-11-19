@@ -22,7 +22,7 @@ public sealed class ChiaService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "{Message}", ex.Message);
+            _logger.LogWarning("Could not connect to full node {Message}", ex.Message);
             return _configuration.GetValue<ulong>("DlMirrorSync:DefaultFee", 500000);
         }
     }

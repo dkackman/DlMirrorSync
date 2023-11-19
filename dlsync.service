@@ -11,7 +11,7 @@ WorkingDirectory=/usr/local/bin/dlsync
 
 # modify as appropriate to use the dll
 ExecStart=/usr/local/bin/dlsync/DlMirrorSync /home/USERNAME/.chia/mainnet/config/config.yaml
-#ExecStart=/usr/bin/dotnet /path/to/your/app/DlMirrorSync.dll
+#ExecStart=/usr/bin/dotnet /path/to/your/app/DlMirrorSync.dll /home/USERNAME/.chia/mainnet/config/config.yaml
 
 Restart=always
 # Restart service after 10 seconds if the dotnet service crashes:

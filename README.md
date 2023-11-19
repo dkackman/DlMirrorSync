@@ -32,7 +32,8 @@ If you are running the single file or standalone versions you can run the follow
 
 ### Install As a Service
 
-First build the binaries by running `publish.ps1` which will build single file and standalone binaries for windows, linux, and os-x. Outputs will be placed in the `publish` folder. Then run the following commands to install the service:
+First build the binaries by running `publish.ps1` [[powershell for linux](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-linux)]
+which will build single file and standalone binaries for windows, linux, and os-x. Outputs will be placed in the `publish` folder. Then run the following commands to install the service:
 
 #### Windows
 

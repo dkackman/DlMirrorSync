@@ -11,7 +11,7 @@ function Publish-Project {
     param(
         [string]$runtime
     )
- 
+
     # single standalone file
     dotnet publish ./$src/$name.csproj -c Release -r $runtime --framework $framework --self-contained true /p:Version=$version /p:PublishReadyToRun=true /p:PublishSingleFile=True /p:PublishTrimmed=false /p:IncludeNativeLibrariesForSelfExtract=True /p:PublishDir="bin\Release\$framework\$runtime\" --output $outputRoot/standalone/$runtime
     Compress-Archive -CompressionLevel Optimal -Path $outputRoot/standalone/$runtime/* -DestinationPath $outputRoot/$name-$version-standalone-$runtime.zip
@@ -25,6 +25,8 @@ Publish-Project("win-x64")
 Publish-Project("linux-x64")
 Publish-Project("osx-x64")
 
-# build the msi - win-x64 only for now
-dotnet build ./MsiInstaller/MsiInstaller.wixproj -c Release -r win-x64 --output $outputRoot
-Move-Item -Path $outputRoot/en-us/*.msi -Destination $outputRoot/$name-$version-service-win-x64.msi
+if ([System.Environment]::OSVersion.Platform -eq "Win32NT") {
+    # build the msi - win-x64 only for now
+    dotnet build ./MsiInstaller/MsiInstaller.wixproj -c Release -r win-x64 --output $outputRoot
+    Move-Item -Path $outputRoot/en-us/*.msi -Destination $outputRoot/$name-$version-service-win-x64.msi
+}

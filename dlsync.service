@@ -1,0 +1,26 @@
+## Data Layer Mirror Sync
+## make sure to set the run as user by replacing USERNAME with your username
+
+[Unit]
+Description=Data Layer Mirror Sync Service
+After=network.target
+
+[Service]
+# assumes that the built executable and appsettings.json is in /usr/local/bin/DlMirrorSync/
+WorkingDirectory=/usr/local/bin/dlsync
+
+# modify as appropriate to use the dll
+ExecStart=/usr/local/bin/dlsync/DlMirrorSync /home/USERNAME/.chia/mainnet/config/config.yaml
+#ExecStart=/usr/bin/dotnet /path/to/your/app/DlMirrorSync.dll
+
+Restart=always
+# Restart service after 10 seconds if the dotnet service crashes:
+RestartSec=10
+KillSignal=SIGINT
+SyslogIdentifier=dotnet-DlMirrorSync
+User=USERNAME
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
+
+[Install]
+WantedBy=multi-user.target

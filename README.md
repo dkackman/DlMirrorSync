@@ -41,8 +41,6 @@ To manually install as a windows service run `./install.ps1` from an elevated te
 
 #### Linux
 
-_work in progress_
-
 To install as a `systemd` service run `sudo bash install.sh`
 
 #### OS-X

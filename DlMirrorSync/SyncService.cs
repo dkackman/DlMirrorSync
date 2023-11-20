@@ -30,7 +30,6 @@ public sealed class SyncService
             _logger.LogInformation("Fetching subscriptions...");
             var subscriptions = await _dataLayer.Subscriptions(stoppingToken);
 
-            _logger.LogInformation("Fetching latest mirrors list...");
             await foreach (var id in _mirrorService.FetchLatest(stoppingToken))
             {
                 if (!subscriptions.Contains(id))

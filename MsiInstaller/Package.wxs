@@ -15,7 +15,7 @@
 <!-- Define the variables in "$(var.*) expressions" -->
 <?define Name = "Data Layer Mirror Sync Service" ?>
 <?define Manufacturer = "dkackman" ?>
-<?define Version = "0.1.1.0" ?>
+<?define Version = "0.2.0.0" ?>
 <?define UpgradeCode = "4E4A92BC-3DA5-4A74-BF8E-D48CFD01010C" ?>
 
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
@@ -33,7 +33,7 @@
 		<StandardDirectory Id="ProgramFiles6432Folder">
 			<Directory Id="INSTALLFOLDER" Name="!(bind.Property.Manufacturer) !(bind.Property.ProductName)" />
 		</StandardDirectory>
-		
+
 		<!-- The files inside this DirectoryRef are linked to
 			 the DlMirrorSync directory via INSTALLFOLDER -->
 		<DirectoryRef Id="INSTALLFOLDER">
@@ -42,7 +42,7 @@
 			<Component Id="AppSettings">
 				<File Id="appsettings.json"
 					  Source="..\publish\standalone\win-x64\appsettings.json"
-					  KeyPath="true" />				
+					  KeyPath="true" />
 			</Component>
 			<Component Id="ServiceExecutable" Bitness="always64">
 

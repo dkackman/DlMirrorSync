@@ -48,10 +48,17 @@ public sealed class SyncService
                         _logger.LogInformation("Adding mirror {id}", id);
                         await _dataLayer.AddMirror(id, addMirrorAmount, Enumerable.Empty<string>(), fee, stoppingToken);
                     }
+                    else if (balance.SpendableBalance == 0 && addMirrorAmount + fee < balance.PendingChange)
+                    {
+                        // no more spendable funds but we have change incoming, pause and see if it has arrived
+                        var waitingForChangeDelaylMinutes = _configuration.GetValue("App:WaitingForChangeDelaylMinutes", 2);
+                        _logger.LogWarning("Waiting for change {WaitingForChangePollingIntervalMinutes} minutes", waitingForChangeDelaylMinutes);
+                        await Task.Delay(TimeSpan.FromMinutes(waitingForChangeDelaylMinutes), stoppingToken);
+                    }
                     else
                     {
                         _logger.LogWarning("Insufficient funds to add mirror {id}. Balance={SpendableBalance}, Cost={addMirrorAmount}, Fee={fee}", id, balance.SpendableBalance, addMirrorAmount, fee);
-                        _logger.LogWarning("Stopping mirror sync for now.");
+                        _logger.LogWarning("Pausing sync for now");
 
                         // stop trying to add mirrors until we have more funds
                         return;

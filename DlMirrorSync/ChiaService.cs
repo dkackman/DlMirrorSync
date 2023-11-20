@@ -16,16 +16,16 @@ public sealed class ChiaService
     {
         try
         {
-            int[] targetTimes = { 300 }; // five minutes
+            int[] targetTimes = [300]; // five minutes
             var fee = await _fullNode.GetFeeEstimate(cost, targetTimes, stoppingToken);
             return fee.estimates.First();
         }
         catch (Exception ex)
         {
-            _logger.LogWarning("Could not connect to full node {Message}", ex.Message);
+            _logger.LogWarning("Could not connect to full node. Using fee amount from config: {Message}", ex.InnerException?.Message ?? ex.Message);
             return _configuration.GetValue<ulong>("DlMirrorSync:DefaultFee", 500000);
         }
     }
 
-    public Wallet GetWallet(uint walletId) => new Wallet(walletId, _wallet);
+    public Wallet GetWallet(uint walletId) => new(walletId, _wallet);
 }

@@ -51,9 +51,9 @@ public sealed class SyncService
                     else if (balance.SpendableBalance == 0 && (addMirrorAmount + fee < balance.PendingChange || addMirrorAmount + fee < balance.ConfirmedWalletBalance))
                     {
                         // no more spendable funds but we have change incoming, pause and see if it has arrived
-                        var waitingForChangeDelaylMinutes = _configuration.GetValue("App:WaitingForChangeDelaylMinutes", 2);
-                        _logger.LogWarning("Waiting {WaitingForChangePollingIntervalMinutes} minutes for change", waitingForChangeDelaylMinutes);
-                        await Task.Delay(TimeSpan.FromMinutes(waitingForChangeDelaylMinutes), stoppingToken);
+                        var waitingForChangeDelayMinutes = _configuration.GetValue("App:WaitingForChangeDelayMinutes", 2);
+                        _logger.LogWarning("Waiting {WaitingForChangeDelayMinutes} minutes for change", waitingForChangeDelayMinutes);
+                        await Task.Delay(TimeSpan.FromMinutes(waitingForChangeDelayMinutes), stoppingToken);
                     }
                     else
                     {

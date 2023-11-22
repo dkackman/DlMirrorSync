@@ -1,5 +1,5 @@
-This repo has moved here: https://github.com/Datalayer-Storage/MirrorManager
-
+This repo has moved here: https://github.com/Datalayer-Storage/MirrorSync
+    
 # DlMirrorSync
 
 [![.NET](https://github.com/dkackman/DlMirrorSync/actions/workflows/dotnet.yml/badge.svg)](https://github.com/dkackman/DlMirrorSync/actions/workflows/dotnet.yml)
